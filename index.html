@@ -37,44 +37,42 @@
     </script>
 </head>
 <body>
-    <div class="d-flex justify-content-center align-items-center min-vh-100 px-2">
-        <div id="container" class="container p-4 rounded">
-            <div class="text-center mb-4">
-                <img src="pietrobon.png" class="img-fluid" style="max-width: 100%; height: auto;">
-                <h2 class="mt-3">Contabilidade das Pastinhas:</h2>
-            </div>
+    <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
+        <div id="container" class="container p-4 rounded d-flex flex-column align-items-center text-center">
+            <img src="pietrobon.png" alt="Logo Pietrobon" class="img-fluid mb-3" style="max-width: 300px;">
+            <h2 class="mb-4">Contabilidade das Pastinhas:</h2>
 
-            <form>
-                <div class="mb-3">
+            <form class="w-100" style="max-width: 500px;">
+                <div class="mb-3 text-start">
                     <label for="usd" class="form-label">Pagamento/Adiantamento USD$:</label>
                     <input type="number" id="usd" class="form-control" step="0.01">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 text-start">
                     <label for="vfat" class="form-label">Valor da Fatura USD$:</label>
                     <input type="number" id="vfat" class="form-control" step="0.01">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 text-start">
                     <label for="vnfe" class="form-label">Valor da Nota R$:</label>
                     <input type="number" id="vnfe" class="form-control" step="0.01">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 text-start">
                     <label for="vcnt" class="form-label">Valor Recebido R$ no Câmbio:</label>
                     <input type="number" id="vcnt" class="form-control" step="0.01">
                 </div>
                 <button type="button" class="btn btn-primary w-100" onclick="calcular()">CALCULAR</button>
             </form>
 
-            <div class="text-center mt-3 mb-3">
+            <div class="mt-3 mb-3">
                 <a href="https://mercadocotacao.com/dolar-hoje/" style="color: lightblue;">
                     Dólar Hoje
                 </a>
                 <script async src="https://mercadocotacao.com/money/mercadocotacao.js"></script>
             </div>
 
-            <div id="porcentagem" class="text-center mb-2"></div>
-            <div id="baixa" class="text-center mb-2"></div>
-            <div id="saldo" class="text-center mb-2"></div>
-            <div id="variacao" class="text-center"></div>
+            <div id="porcentagem" class="mb-2"></div>
+            <div id="baixa" class="mb-2"></div>
+            <div id="saldo" class="mb-2"></div>
+            <div id="variacao"></div>
         </div>
     </div>
 </body>
