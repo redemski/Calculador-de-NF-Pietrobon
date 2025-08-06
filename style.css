@@ -1,0 +1,50 @@
+body {
+    background-image: url("https://tekkieuni.com/wp-content/uploads/2019/07/Van_Gogh.jpg");
+    color: white;
+    font-family: 'Quicksand', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#container {
+    text-align: left;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 700px;
+    margin-top: 20px;
+}
+
+label {
+    display: inline-block;
+    width: 280px;
+    margin-bottom: 8px;
+}
+
+input[type="number"] {
+    width: 150px;
+    padding: 5px;
+}
+
+input[type="button"] {
+    margin-top: 10px;
+    padding: 8px 16px;
+}
+
+h2 {
+    margin-top: 30px;
+}
+
+p {
+    margin: 6px 0;
+}
+
+hr {
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid #fff;
+}

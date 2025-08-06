@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Calculador para Notas Fiscais</title>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Calculador para Notas Fiscais.css">
+</head>
+<body>
+    <div id="container">
+        <center><img src="https://vendas.pietrobon.com.br/public/template_loja/imgs/logo_pietrobon.png" width="500" height="100"></center>
+
+        <h2>Cálculo de Valor Unitário:</h2>
+        <form>
+            <label for="valorUSD">Valor total do produto (USD):</label>
+            <input type="number" id="valorUSD" step="0.01"><br>
+
+            <label for="pesoTotal">Peso líquido total do produto (kg):</label>
+            <input type="number" id="pesoTotal" step="0.01"><br>
+
+            <label for="quantidade">Quantidade no pedido:</label>
+            <input type="number" id="quantidade" step="1"><br>
+
+            <label for="taxaManual">Taxa do dólar (opcional):</label>
+            <input type="number" id="taxaManual" step="0.0001"><br>
+
+            <input type="button" value="CALCULAR VALORES" onclick="calcularValores()"><br><br>
+
+            <p id="cotacao">Carregando cotação...</p>
+            <p id="valorUnitario"></p>
+            <p id="pesoUnitario"></p>
+        </form>
+
+        <hr>
+
+        <h2>Cálculo de Valor Total (Unitário × Quantidade):</h2>
+        <form>
+            <label for="valorUnitarioSimples">Valor Unitário (USD):</label>
+            <input type="number" id="valorUnitarioSimples" step="0.0001"><br>
+
+            <label for="quantidadeSimples">Quantidade de caixas:</label>
+            <input type="number" id="quantidadeSimples" step="1"><br>
+
+            <input type="button" value="CALCULAR VALOR TOTAL" onclick="calcularTotalSimples()"><br><br>
+
+            <p id="resultadoSimples"></p>
+        </form>
+
+        <hr>
+
+        <h2>Cálculo de Pesos:</h2>
+        <form>
+            <label for="gramatura">Gramatura (g):</label>
+            <input type="number" id="gramatura" step="0.01"><br>
+
+            <label for="qtdPorCaixa">Qtd. por caixa:</label>
+            <input type="number" id="qtdPorCaixa" step="1"><br>
+
+            <label for="quantidadePeso">Quantidade no pedido:</label>
+            <input type="number" id="quantidadePeso" step="1"><br>
+
+            <input type="button" value="CALCULAR PESOS" onclick="calcularPesos()"><br><br>
+
+            <div id="resultadosPesos">
+                <p id="pesoLiquidoUnitario"></p>
+                <p id="pesoLiquidoTotal"></p>
+                <p id="pesoBrutoUnitario"></p>
+                <p id="pesoBrutoTotal"></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let cotacaoUSD = 0;
+        fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL")
+            .then(res => res.json())
+            .then(data => {
+                cotacaoUSD = parseFloat(data.USDBRL.bid);
+                document.getElementById("cotacao").innerText = `Cotação atual do dólar: R$ ${cotacaoUSD.toLocaleString('pt-BR', { minimumFractionDigits: 4 })}`;
+            })
+            .catch(() => {
+                document.getElementById("cotacao").innerText = "Erro ao buscar cotação.";
+            });
+
+        function calcularValores() {
+            const valorUSD = parseFloat(document.getElementById("valorUSD").value);
+            const pesoTotal = parseFloat(document.getElementById("pesoTotal").value);
+            const quantidade = parseInt(document.getElementById("quantidade").value);
+            const taxaManual = parseFloat(document.getElementById("taxaManual").value);
+            const taxaFinal = !isNaN(taxaManual) && taxaManual > 0 ? taxaManual : cotacaoUSD;
+            if (isNaN(valorUSD) || isNaN(pesoTotal) || pesoTotal === 0 || isNaN(quantidade) || quantidade === 0 || taxaFinal === 0) {
+                alert("Preencha os campos corretamente.");
+                return;
+            }
+            const valorBRL = valorUSD * taxaFinal;
+            const valorUnitario = valorBRL / pesoTotal;
+            const pesoUnitario = pesoTotal / quantidade;
+            document.getElementById("cotacao").innerText = `Cotação usada: R$ ${taxaFinal.toLocaleString('pt-BR', { minimumFractionDigits: 4 })}`;
+            document.getElementById("valorUnitario").innerHTML = `<strong>Valor Unitário (R$/kg):</strong> R$ ${valorUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 5 })}`;
+            document.getElementById("pesoUnitario").innerHTML = `<strong>Peso Unitário (kg):</strong> ${pesoUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg`;
+        }
+
+        function calcularTotalSimples() {
+            const valorUnitUSD = parseFloat(document.getElementById("valorUnitarioSimples").value);
+            const qtd = parseInt(document.getElementById("quantidadeSimples").value);
+            if (isNaN(valorUnitUSD) || isNaN(qtd) || qtd <= 0 || cotacaoUSD === 0) {
+                alert("Preencha corretamente os campos.");
+                return;
+            }
+            const valorUnitBRL = valorUnitUSD * cotacaoUSD;
+            const totalBRL = valorUnitBRL * qtd;
+            document.getElementById("resultadoSimples").innerHTML =
+                `<strong>Valor Total (R$):</strong> R$ ${totalBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+        }
+
+        function calcularPesos() {
+            const gramatura = parseFloat(document.getElementById("gramatura").value);
+            const qtdPorCaixa = parseInt(document.getElementById("qtdPorCaixa").value);
+            const quantidade = parseInt(document.getElementById("quantidadePeso").value);
+            if (isNaN(gramatura) || isNaN(qtdPorCaixa) || isNaN(quantidade) || gramatura <= 0 || qtdPorCaixa <= 0 || quantidade <= 0) {
+                alert("Preencha corretamente os campos de peso.");
+                return;
+            }
+            const pesoLiqUnit = (gramatura * qtdPorCaixa) / 1000;
+            const pesoLiqTotal = pesoLiqUnit * quantidade;
+            const pesoBrutoUnit = pesoLiqUnit + 0.9;
+            const pesoBrutoTotal = pesoBrutoUnit * quantidade;
+            document.getElementById("pesoLiquidoUnitario").innerHTML = `<strong>Peso Líquido Unitário:</strong> ${pesoLiqUnit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg`;
+            document.getElementById("pesoLiquidoTotal").innerHTML = `<strong>Peso Líquido Total:</strong> ${pesoLiqTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg`;
+            document.getElementById("pesoBrutoUnitario").innerHTML = `<strong>Peso Bruto Unitário:</strong> ${pesoBrutoUnit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg`;
+            document.getElementById("pesoBrutoTotal").innerHTML = `<strong>Peso Bruto Total:</strong> ${pesoBrutoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg`;
+        }
+    </script>
+</body>
+</html>
